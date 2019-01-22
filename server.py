@@ -16,7 +16,7 @@
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
 
-from bottle import response, error, get
+from bottle import response, error, get, post, request
 import json
 
 
@@ -26,6 +26,18 @@ import json
 # TODO: Add your routes here and remove the example routes once you know how
 #       everything works.
 ###############################################################################
+
+
+@post('/')
+def submitForm():
+    origin = request.forms.get('origin')
+    best_before_date = request.forms.get('best_before_date')
+    product = request.forms.get('product')
+    amount = request.forms.get('amount')
+    image = request.forms.get('image')
+
+    form_body = {origin + best_before_date + product + amount + image}
+    return form_body
 
 @get('/hello')
 def hello_world():
