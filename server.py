@@ -16,8 +16,9 @@
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
 
-from bottle import response, error, get, post, request
+from bottle import response, error, get, post, request, route
 import json
+from random import randint
 
 
 ###############################################################################
@@ -29,15 +30,18 @@ import json
 
 
 @post('/')
-def submitForm():
+def submitForm(db):
+
     origin = request.forms.get('origin')
     best_before_date = request.forms.get('best_before_date')
     product = request.forms.get('product')
     amount = request.forms.get('amount')
     image = request.forms.get('image')
 
-    form_body = {origin + best_before_date + product + amount + image}
-    return form_body
+    db.execute(""" INSERT INTO supermarket (product, origin, amount, image, best_before_date)
+                VALUES (?, ?, ?, ?, ?)""",
+                (product, origin, amount, image,  best_before_date))
+
 
 @get('/hello')
 def hello_world():
@@ -74,11 +78,6 @@ def db_example(db):
 
     # Return results as JSON
     return json.dumps(products)
-
-
-
-
-
 
 ###############################################################################
 # Error handling
