@@ -42,6 +42,18 @@ def submitForm(db):
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
 
+@get('/') #will return all sqllite data in JSON format
+def getStocklist(db):
+    db.execute("SELECT * FROM supermarket")
+    response = db.fetchall()
+    return json.dumps(response)
+
+@get('/reset') #will reset data base so that it is empty. A hard reset but will keep table construct so new data can be inserted
+def resetStockList(db):
+         db.execute("DELETE FROM supermarket")
+         return 'Reset database'
+
+
 
 @get('/hello')
 def hello_world():
