@@ -29,7 +29,7 @@ from random import randint
 ###############################################################################
 
 
-@post('/')
+@post('/create')
 def submitForm(db):
 
     origin = request.forms.get('origin')
@@ -41,9 +41,10 @@ def submitForm(db):
     db.execute(""" INSERT INTO supermarket (product, origin, amount, image, best_before_date)
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
+    response.status=201
 
 
-@get('/') #will return all sqllite data in JSON format
+@get('/getAll') #will return all sqllite data in JSON format
 def getStocklist(db):
     db.execute("SELECT * FROM supermarket")
     response = db.fetchall()
@@ -54,7 +55,7 @@ def resetStockList(db):
          db.execute("DELETE FROM supermarket")
          return 'Reset database'
 
-@delete ('/<id>')
+@delete ('/delete/<id>')
 def deleteItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
@@ -65,7 +66,7 @@ def deleteItem(db, id):
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
         return '200, item was deleted'
 
-@get ('/<id>')
+@get ('/getSpecific/<id>')
 def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
@@ -75,14 +76,15 @@ def getItem(db, id):
     else:
         return json.dumps(response)
 
-@put ('/<id>')
+@put ('/update/<id>')
 def updateItem(db, id):
 
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                         FROM supermarket WHERE id=?""", (id,))
     response = db.fetchall()
     if response == []:
-        return 'Element with ID ' + id + ' is not in database'
+        response.status=404
+        return 'Error 404: Element with ID ' + id + ' is not in database'
     else:
 
         origin = request.forms.get('origin')
@@ -95,7 +97,8 @@ def updateItem(db, id):
                         SET product=?, origin=?, amount=?, image=?,
                         best_before_date=? WHERE id=?""",
                         (product, origin, amount, image, best_before_date, id))
-        return '200, item was updated'
+        response.status=201
+        return 'Item was updated'
 
 @error(404)
 def error404(error):
