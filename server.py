@@ -42,6 +42,7 @@ def submitForm(db):
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
 
+
 @get('/') #will return all sqllite data in JSON format
 def getStocklist(db):
     db.execute("SELECT * FROM supermarket")
