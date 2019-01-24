@@ -74,10 +74,10 @@ def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     response = db.fetchall()
-    if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
-        return 'Element wrong input, id must be integer'
-        response.status=400
-    elif response == []:
+    #if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
+        #return 'Element wrong input, id must be integer'
+        #response.status=400
+    if response == []:
         return 'Element with ID ' + id + ' is not in database'
         response.status=404
     else:
