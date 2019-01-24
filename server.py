@@ -16,7 +16,7 @@
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
 
-from bottle import response, error, get, post, request, route
+from bottle import response, error, get, post, request, route, delete, put
 import json
 from random import randint
 
@@ -54,7 +54,30 @@ def resetStockList(db):
          db.execute("DELETE FROM supermarket")
          return 'Reset database'
 
+@delete ('/<id>')
+def deleteItem(db, id):
+    db.execute("DELETE FROM supermarket WHERE id=?", (id,))
 
+@get ('/<id>')
+def getItem(db, id):
+    db.execute("""SELECT id, product, origin, amount, image, best_before_date
+                    FROM supermarket WHERE id=?""", (id,))
+    response = db.fetchall()
+    return json.dumps(response)
+
+@put ('/')
+def updateItem(db):
+    origin = request.forms.get('origin')
+    best_before_date = request.forms.get('best_before_date')
+    product = request.forms.get('product')
+    amount = request.forms.get('amount')
+    image = request.forms.get('image')
+    id = request.forms.get('setID')
+
+    db.execute("""UPDATE supermarket
+                    SET product=?, origin=?, amount=?, image=?,
+                    best_before_date=? WHERE id=?""",
+                    (product, origin, amount, image, best_before_date, id))
 
 @get('/hello')
 def hello_world():
