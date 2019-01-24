@@ -89,8 +89,8 @@ def updateItem(db, id):
 
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                         FROM supermarket WHERE id=?""", (id,))
-    response = db.fetchall()
-    if response == []:
+    responses = db.fetchall()
+    if responses == []:
         response.status=404
         return 'Error 404: Element with ID ' + id + ' is not in database'
     else:
