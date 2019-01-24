@@ -28,7 +28,6 @@ from random import randint
 #       everything works.
 ###############################################################################
 
-
 @post('/create')
 def submitForm(db):
 
@@ -42,7 +41,7 @@ def submitForm(db):
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
     response.status=201
-
+    return 'Item has been submitted'
 
 @get('/getAll') #will return all sqllite data in JSON format
 def getStocklist(db):
@@ -52,8 +51,8 @@ def getStocklist(db):
 
 @get('/reset') #will reset data base so that it is empty. A hard reset but will keep table construct so new data can be inserted
 def resetStockList(db):
-         db.execute("DELETE FROM supermarket")
-         return 'Reset database'
+    db.execute("DELETE FROM supermarket")
+    return 'Reset database'
 
 @delete ('/delete/<id>')
 def deleteItem(db, id):
@@ -62,19 +61,28 @@ def deleteItem(db, id):
     response = db.fetchall()
     if response == []:
         return 'Element with ID ' + id + ' is not in database'
+        response.status=404
+        return 'Item is not in database'
+
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        return '200, item was deleted'
+        respponse.status=200
+        return 'Item was deleted'
 
 @get ('/getSpecific/<id>')
 def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     response = db.fetchall()
-    if response == []:
+    if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
+        return 'Element wrong input, id must be integer'
+        response.status=400
+    elif response == []:
         return 'Element with ID ' + id + ' is not in database'
+        response.status=404
     else:
         return json.dumps(response)
+        response.status=200
 
 @put ('/update/<id>')
 def updateItem(db, id):
