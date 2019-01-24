@@ -56,28 +56,66 @@ def resetStockList(db):
 
 @delete ('/<id>')
 def deleteItem(db, id):
-    db.execute("DELETE FROM supermarket WHERE id=?", (id,))
+    db.execute("""SELECT id, product, origin, amount, image, best_before_date
+                    FROM supermarket WHERE id=?""", (id,))
+    response = db.fetchall()
+    if response == []:
+        return 'Element with ID ' + id + ' is not in database'
+    else:
+        db.execute("DELETE FROM supermarket WHERE id=?", (id,))
+        return '200, item was deleted'
 
 @get ('/<id>')
 def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     response = db.fetchall()
-    return json.dumps(response)
+    if response == []:
+        return 'Element with ID ' + id + ' is not in database'
+    else:
+        return json.dumps(response)
 
-@put ('/')
-def updateItem(db):
-    origin = request.forms.get('origin')
-    best_before_date = request.forms.get('best_before_date')
-    product = request.forms.get('product')
-    amount = request.forms.get('amount')
-    image = request.forms.get('image')
-    id = request.forms.get('setID')
+@put ('/<id>')
+def updateItem(db, id):
 
-    db.execute("""UPDATE supermarket
-                    SET product=?, origin=?, amount=?, image=?,
-                    best_before_date=? WHERE id=?""",
-                    (product, origin, amount, image, best_before_date, id))
+    db.execute("""SELECT id, product, origin, amount, image, best_before_date
+                        FROM supermarket WHERE id=?""", (id,))
+    response = db.fetchall()
+    if response == []:
+        return 'Element with ID ' + id + ' is not in database'
+    else:
+
+        origin = request.forms.get('origin')
+        best_before_date = request.forms.get('best_before_date')
+        product = request.forms.get('product')
+        amount = request.forms.get('amount')
+        image = request.forms.get('image')
+
+        db.execute("""UPDATE supermarket
+                        SET product=?, origin=?, amount=?, image=?,
+                        best_before_date=? WHERE id=?""",
+                        (product, origin, amount, image, best_before_date, id))
+        return '200, item was updated'
+
+@error(404)
+def error404(error):
+    return 'Nothing here, sorry'
+
+@error(500)
+def error500(error):
+    return 'Sorry, server error :/ *Import dinaosaur*'
+
+@error(403)
+def error403(error):
+    return 'Halt, authorized personal only >:)'
+
+@error(503)
+def error503(error):
+    return 'service unavailable: server in maintanance. Try again later :))'
+
+@error(504)
+def error504(error):
+    return 'Gateway timeout, lolz'
 
 @get('/hello')
 def hello_world():
