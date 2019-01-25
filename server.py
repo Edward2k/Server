@@ -40,8 +40,6 @@ def submitForm(db):
     db.execute(""" INSERT INTO supermarket (product, origin, amount, image, best_before_date)
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
-    response.status=201
-    return 'Item has been submitted'
 
 @get('/getAll') #will return all sqllite data in JSON format
 def getStocklist(db):
@@ -61,12 +59,11 @@ def deleteItem(db, id):
     answer = db.fetchall()
     if answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        #response.status=404
-        #return 'Item is not in database'
+        answer.status=404
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        response.status=200
+        answer.status=200
         return 'Item was deleted'
 
 @get ('/getSpecific/<id>')
@@ -74,15 +71,15 @@ def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     answer = db.fetchall()
-    #if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
-        #return 'Element wrong input, id must be integer'
-    # response.status=400
-    if answer == []:
+    if id.isalpha():
+        return 'Element wrong input, id must be integer'
+        answer.status=400
+    elif answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        response.status=404
+        answer.status=404
     else:
         return json.dumps(answer)
-        response.status=200
+        answer.status=200
 
 @put ('/update/<id>')
 def updateItem(db, id):
