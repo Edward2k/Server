@@ -58,30 +58,30 @@ def resetStockList(db):
 def deleteItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
-    response = db.fetchall()
-    if response == []:
+    answer = db.fetchall()
+    if answer == []:
         return 'Element with ID ' + id + ' is not in database'
         #response.status=404
         #return 'Item is not in database'
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        respponse.status=200
+        response.status=200
         return 'Item was deleted'
 
 @get ('/getSpecific/<id>')
 def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
-    response = db.fetchall()
+    answer = db.fetchall()
     #if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
         #return 'Element wrong input, id must be integer'
-        #response.status=400
-    if response == []:
+    # response.status=400
+    if answer == []:
         return 'Element with ID ' + id + ' is not in database'
         response.status=404
     else:
-        return json.dumps(response)
+        return json.dumps(answer)
         response.status=200
 
 @put ('/update/<id>')
@@ -91,8 +91,8 @@ def updateItem(db, id):
                         FROM supermarket WHERE id=?""", (id,))
     responses = db.fetchall()
     if responses == []:
-        response.status=404
         return 'Error 404: Element with ID ' + id + ' is not in database'
+        response.status=404
     else:
 
         origin = request.forms.get('origin')
