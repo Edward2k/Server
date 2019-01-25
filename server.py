@@ -36,6 +36,9 @@ def submitForm(db):
     db.execute(""" INSERT INTO supermarket (product, origin, amount, image, best_before_date)
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
+    return 'Element has been created'
+    response.status=201
+
 
 @get('/getAll') #will return all sqllite data in JSON format. It is Idempotent as 2 consescutive calls result in same response
 def getStocklist(db):
@@ -55,11 +58,11 @@ def deleteItem(db, id):
     answer = db.fetchall()
     if answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        answer.status=404 #response code
+        response.status=404 #response code
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        answer.status=200 #response code
+        response.status=200 #response code
         return 'Item was deleted'
 
 @get ('/getSpecific/<id>') #(RESTful) Idempotent as will always retireve the same value for same ID
@@ -69,13 +72,13 @@ def getItem(db, id):
     answer = db.fetchall()
     if id.isalpha():
         return 'Element wrong input, id must be integer'
-        answer.status=400
+        response.status=400
     elif answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        answer.status=404 #response code
+        response.status=404 #response code
     else:
         return json.dumps(answer)
-        answer.status=200 #response code
+        response.status=200 #response code
 
 @put ('/update/<id>') #(RESTful) Idempotent as repeat requests will result in same result
 def updateItem(db, id):
@@ -111,7 +114,7 @@ def error404(error):
 
 @error(500) #Server Error
 def error500(error):
-    return 'Sorry, server error :/ *Import dinaosaur*'
+    return 'Sorry, server error :/ Import dinaosaur'
 
 @error(403) #Unauthorized access
 def error403(error):
