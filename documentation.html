@@ -2,113 +2,325 @@
 <html>
 
 <head>
-    <title>Group 3-16 WebServer</title>
+  <title>Group 3-16 WebServer</title>
+  <style>
+#exampleTables {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#exampleTables td, #exampleTables th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#exampleTables tr:hover {background-color: #ddd;}
+
+#exampleTables th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: white;
+  color: black;
+}
+
+h2{
+  margin-bottom: 20px;
+  margin-top: 35px;
+  text-align: center;
+  font-size: 2.25em;
+}
+
+section{
+  border-style: solid hidden solid;
+  border-color: grey white grey;
+  border-width: 3.5px;
+}
+
+ul{
+  margin-left: 4%;
+  font-size: 1.1em;
+  font-variant: normal;
+}
+
+dl{
+  margin-left: 4%;
+  font-size: 1.1em;
+  font-variant: normal;
+  margin-bottom: 40px;
+}
+
+p {
+  margin-left: 2%;
+  margin-right: 1%;
+  font-size: 1.1em;
+  font-variant: normal;
+}
+
+</style>
 </head>
 
 <body>
-    <h1>Getting Started</h1>
+    <h1>Getting Started: </h1>
 
     <p>The purpose for this document is to explain the use of the API, developed in this assignement.
     It is an RESTful API, that follows the CRUD principles, that allows the user to Create, Retrieve, Update and Delete
     content from our database, which stores items sold at Einstein Heijn, and their properties, like; product name, origin,
-    best before date, and an image. This is achieved by using the POST, GET, PUT, and DELETE, http methods, respectively.
+    best before date, amounts and an image. This is achieved by using the POST, GET, PUT, and DELETE, http methods, respectively.
     Their functionality is explained below:</p>
 
-    <h2>Create Item in Stocklist </h2>
+    <ul>
+      <li><a href="#create">Create Item in Stocklist</a></li>
+      <li><a href="#getAll">Retrieve entire Stocklist</a></li>
+      <li><a href="#getSpecific">Retrieve specified Item</a></li>
+      <li><a href="#update">Update specified Item</a></li>
+      <li><a href="#delete">Delete specific Item</a></li>
+      <li><a href="#reset">Reset entire Stocklist</a></li>
+    </ul>
 
-    <p><b> Endpoint:</b> http://localhost:8080/create </p>
-    <p>This will create an item with the, based on the given parameter input: </p>
+    <section id="create">
+      <h2>Create Item in Stocklist </h2>
 
-    <p><b>HTTP method:</b> POST </p>
+      <p>In the following list, you will find the API's key REST ingredient's to create an item in the database: </p>
 
-    <p><b>Response format:</b> JSON </p>
-    <p><b>Parameters: </b></p>
-    <dl>
-      <dt>origin</dt>
-        <dd>- Where does the product come from</dd>
-      <dt>best_before_date</dt>
-        <dd>- When is the product going to be bad?</dd>
-      <dt>product</dt>
-        <dd>- Name of the produce</dd>
-      <dt>amount</dt>
-        <dd>- Input the quantity of the product (kg or any other unit)</dd>
-      <dt>image</dt>
-        <dd>- Input URI of the image to be displayed.</dd>
-    </dl>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/create</li>
+        <li><b>HTTP method:</b> POST </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> 201; Created </li>
+      </ul>
 
-    <p><b>Example: </b> POST http://localhost:8080/create?origin=NL&best_before_date=11.03.2022&product=marshmallows&amount=500kg&image=https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/full-frame-of-white-mini-marshmallows-royalty-free-image-899983790-1542738340.jpg?crop=1xw:0.75xh;center,top&resize=1200:* </p>
-    <p><b>Response code: </b> </p>
+      <p>To create the item, you will need to specify all of the following <b>parameters</b>:(<i>Note: spelling and capitalization matter. Below is the spelling needed to identify the parameters</i>)
+        <dl>
+          <dt>origin:</dt>
+            <dd>Where does the product come from?</dd>
+          <dt>best_before_date:</dt>
+            <dd>When is the product going to be bad?</dd>
+          <dt>product:</dt>
+            <dd>Name of the product</dd>
+          <dt>amount:</dt>
+            <dd>Input the quantity of the product (kg or any other unit)</dd>
+          <dt>image:</dt>
+            <dd>Input URI of the image to be displayed.</dd>
+        </dl>
+      </li>
+    </ul>
 
+    <p>The following example URL and response code should clarify how to use this feature of the API: </p>
+    <table id="exampleTables">
+      <tr>
+        <th>Example</th>
+        <th>Response code</th>
+      </tr>
+      <tr>
+        <td> <p> POST http://localhost:8080/create?origin=NL&best_before_date=11.03.2022&product=marshmallows&amount=500kg&image=none <p>
+        <p> <i>Note: if the passing of the parameters does not work via the URL, as seen above, pass them using the 'Postman' application. Alternatively, you can use the interface on our website</i></p></td>
+        <td> Element has been created </td>
+      </tr>
+    </table>
 
-    <h2>Retrieve Entirety of Stocklist </h2>
+  </section>
 
-    <p><b>Endpoint:</b> http://localhost:8080/getAll </p>
-    <p>This will return the entire inventory in the stock list. </p>
+    <section id="getAll">
+      <h2>Retrieve Entire Stocklist </h2>
 
-    <p><b>HTTP method:</b> GET </p>
+      <p>In the following list, you will find the API's key REST ingredient's to fetch all the items in the database: </p>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/getAll</li>
+        <li><b>HTTP method:</b> GET </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> none configurated. </li>
+      </ul>
 
-    <p><b>Response format:</b> JSON </p>
+      <p>Since this method will get all the inventory, no parameter's are needed to identify an item.</p>
 
-    <p>Parameters: none. </p>
-    <p>Since this method will get all the inventory, no parameter need to be passed that would identify item.</p>
+      <p>The following example URL and response code should further illustrate the use of this feature: (<i>Note how the item created in the 'create item in stocklist' section, is now being fetched</i>)</p>
 
-    <p><b>Example: </b> GET http://localhost:8080/getAll </p>
-    <p><b>Response code: </b> </p>
-      <p>[</p>
-          <p>{</p>
-              <p>"origin": "The Netherlands",</p>
-              <p>"product": "Apples",</p>
-              <p>"best_before_date": "November 2019",</p>
-              <p>"image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Apples.jpg/512px-Apples.jpg",</p>
-              <p>"amount": "100kg",</p>
-              <p>"id": 1</p>
-          <p>},</p>
-          <p>{</p>
-              <p>"origin": "India",</p>
-              <p>"product": "Banana",</p>
-              <p>"best_before_date": "February 2019",</p>
-              <p>"image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Bananas.jpg/640px-Bananas.jpg",</p>
-              <p>"amount": "120kg",</p>
-              <p>"id": 2</p>
-          <p>},</p>
-          <p>{</p>
-              <p>"origin": "Thailand",</p>
-              <p>"product": "Oranges",</p>
-              <p>"best_before_date": "July 2020",</p>
-              <p>"image": "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fproducemadesimple.ca%2Fwp-content%2Fuploads%2F2015%2F01%2Forange-web-1024x768.jpg&f=1",</p>
-              <p>"amount": "70kg",</p>
-              <p>"id": 3</p>
-          <p>}</p>
-      <p>]</p>
+      <table id="exampleTables">
+        <tr>
+          <th>Example</th>
+          <th>Response code</th>
+        </tr>
+        <tr>
+          <td> GET http://localhost:8080/getAll </td>
+          <td> <p>[ {</p>
+                  <p>"origin": "NL",
+                  "product": "marshmallows",
+                  "best_before_date": "11.03.2022",
+                  "image": "none",
+                  "amount": "500kg",
+                  "id": 1</p>
+              <p>}, {</p>
+                  <p>"origin": "India",
+                  "product": "Banana",
+                  "best_before_date": "February 2019",
+                  "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Bananas.jpg/640px-Bananas.jpg",
+                  "amount": "120kg",
+                  "id": 2
+              <p>}, {</p>
+                  <p>"origin": "Thailand",
+                  "product": "Oranges",
+                  "best_before_date": "July 2020",
+                  "image": "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fproducemadesimple.ca%2Fwp-content%2Fuploads%2F2015%2F01%2Forange-web-1024x768.jpg&f=1",
+                  "amount": "70kg",
+                  "id": 3</p>
+              <p>} ]</p> </td>
+        </tr>
+      </table>
+    </section>
 
-    <h2>GET Specific Item </h2>
+    <section id= "getSpecific">
+      <h2>Retrieve specified Item </h2>
 
-    <p><b>Endpoint:</b> GET http://localhost:8080/getSpecific/{id}</p>
-    <p>This will return the item speficied by the given id in the URL, and show its properties: product name, origin,
-    best before date, and its image. </p>
-    <p>Request Parameters </p>
+      <p>In the following list, you will find the API's key REST ingredient's to fetch an specific item in the database: </p>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/getSpecific/{id}</li>
+        <li><b>HTTP method:</b> GET </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> 404: Item not found, 400: Bad request, 200: OK</li>
+      </ul>
+      <p>This feature does not require parameters to be passed- apart from specifying the ID in the URL of the item to be retrieved, ofcourse.
+        If the ID is malformed, like when the user entered an letter instead of an integer, the page response with the 400 response code.
+        The 404 response code will be triggered if an ID is specified that is currently not saved in the database. Furthermore,
+        the 200 response code occurs when everything the ID is an integer and is saved in the database. Given these distinct response codes,
+        they are included in the below examples to exemplify how they are triggered: </p>
 
-    <p> Header: none </p>
-    <p> Path: none </p>
-    <p> Query: none </p>
+      <table id="exampleTables">
+        <tr>
+          <th>Example</th>
+          <th>Response code</th>
+        </tr>
+        <tr>
+          <td> GET http://localhost:8080/getSpecific/3 </td>
+          <td> <p>[ {</p>
+                  <p>"origin": "Thailand",
+                  "product": "Oranges",
+                  "best_before_date": "July 2020",
+                  "image": "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fproducemadesimple.ca%2Fwp-content%2Fuploads%2F2015%2F01%2Forange-web-1024x768.jpg&f=1",
+                  "amount": "70kg",
+                  "id": 3</p>
+              <p>} ]</p> </td>
+        </tr>
+        <tr>
+          <td>GET http://localhost:8080/getSpecific/4 </td>
+          <td> Element with ID 4 is not in database</td>
+        </tr>
+        <tr>
+          <td>GET http://localhost:8080/getSpecific/r </td>
+          <td>Wrong input, id must be integer</td>
+        </tr>
+      </table>
+    </section>
 
-    <h5>Response format </h5>
-    <p> On success, data will be returned in the JSON format. Success code, 200 in the response header.</p>
+    <section id= "update">
+      <h2>Update specified Item</h2>
 
-    <h5>Example </h5>
-    <p> ... </p>
+      <p>In the following list, you will find the API's key REST ingredient's to update an specific item in the database: </p>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/update/{id}</li>
+        <li><b>HTTP method:</b> PUT </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> 404: Item not found, 201: Item is updated</li>
+      </ul>
 
-    <h3>POST item </h3>
-    <h5>Endpoint</h5>
-    <p>POST localhost:8080/create </p>
+      <p>To update the item, you will need to specify one or more the parameter that needs to be updated. The number of parameters passed depends on the number of things that need to be updated on that item (<i>Note: spelling and capitalization matter. Below is the spelling needed to identify the parameters</i>)
+        <dl>
+          <dt>origin:</dt>
+            <dd>Where does the product come from?</dd>
+          <dt>best_before_date:</dt>
+            <dd>When is the product going to be bad?</dd>
+          <dt>product:</dt>
+            <dd>Name of the product</dd>
+          <dt>amount:</dt>
+            <dd>Input the quantity of the product (kg or any other unit)</dd>
+          <dt>image:</dt>
+            <dd>Input URI of the image to be displayed.</dd>
+        </dl>
+      </li>
+    </ul>
 
-    <h3>PUT item </h3>
-    <h5>Endpoint</h5>
-    <p>PUT localhost:8080/update </p>
+      <p> In the below example you will see that 2 parameters have been passed (amount and best_before_date), but the number of parameters can change, as explained above.
+        The 404 response code will be triggered if an ID is specified that is currently not saved in the database. Furthermore,
+        The 201 response code occurs when the specified item has successfully been updated. Given these distinct response codes,
+        they are included in the below examples to exemplify how they are triggered: </p>
 
-    <h3>DELETE item </h3>
-    <h5>Endpoint</h5>
-    <p>DELETE localhost:8080/delete/{product_name} </p>
+      <table id="exampleTables">
+        <tr>
+          <th>Example</th>
+          <th>Response code</th>
+        </tr>
+        <tr>
+          <td> PUT http://localhost:8080/update/3?amount=100kg&best_before_date=12.03.2022
+          <p><i>Note: if the passing of the parameters does not work via the URL, as seen above, pass them using the 'Postman' application.</i></p></td>
+          <td> <p>[ {</p>
+                  <p>"origin": "Thailand",
+                  "product": "Oranges",
+                  "best_before_date": "12.03.2022",
+                  "image": "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fproducemadesimple.ca%2Fwp-content%2Fuploads%2F2015%2F01%2Forange-web-1024x768.jpg&f=1",
+                  "amount": "100kg",
+                  "id": 3</p>
+              <p>} ]</p> </td>
+        </tr>
+        <tr>
+          <td>PUT http://localhost:8080/getSpecific/4 </td>
+          <td> Element with ID 4 is not in database</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id= "delete">
+      <h2>Delete specified Item</h2>
+
+      <p>In the following list, you will find the API's key REST ingredient's to delete an specified item in the database: </p>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/delete/{id}</li>
+        <li><b>HTTP method:</b> DELETE </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> 404: Item not found, 200: OK</li>
+      </ul>
+      <p>The delete feature does not require any parameters to be passed, since we are deleting an item based on the given ID. </p>
+
+      <table id="exampleTables">
+        <tr>
+          <th>Example</th>
+          <th>Response code</th>
+        </tr>
+        <tr>
+          <td> DELETE http://localhost:8080/delete/3 </td>
+          <td> Item was deleted </td>
+        </tr>
+        <tr>
+          <td><p><i>Note, that if we want to delete the same item, with ID 3 again, item will not be found.</i></p>
+            <p>DELETE http://localhost:8080/delete/3 </p></td>
+          <td> Element with ID 3 is not in database</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id= "reset">
+      <h2>Reset Stocklist</h2>
+
+      <p>In the following list, you will find the API's key REST ingredient's to delete the entire stocklist: </p>
+      <ul>
+        <li><b>Endpoint:</b> http://localhost:8080/reset</li>
+        <li><b>HTTP method:</b> GET </li>
+        <li><b>Response format:</b> JSON </li>
+        <li><b>Applicable response code:</b> not applicable</li>
+      </ul>
+      <p>The reset feature does not require any parameters to be passed, since we are deleting everything. </p>
+
+      <table id="exampleTables">
+        <tr>
+          <th>Example</th>
+          <th>Response code</th>
+        </tr>
+        <tr>
+          <td> GET http://localhost:8080/reset</td>
+          <td> Reset database </td>
+        </tr>
+      </table>
+    </section>
 
 </body>
 
