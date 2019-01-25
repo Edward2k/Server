@@ -23,12 +23,8 @@ from random import randint
 
 ###############################################################################
 # Routes
-#
-# TODO: Add your routes here and remove the example routes once you know how
-#       everything works.
-###############################################################################
 
-@post('/create')
+@post('/create') #NOT IDEMPOTENT since it will not always return the same value. Safe to use as it works as intended
 def submitForm(db):
 
     origin = request.forms.get('origin')
@@ -41,7 +37,7 @@ def submitForm(db):
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
 
-@get('/getAll') #will return all sqllite data in JSON format
+@get('/getAll') #will return all sqllite data in JSON format. It is Idempotent as 2 consescutive calls result in same response
 def getStocklist(db):
     db.execute("SELECT * FROM supermarket")
     response = db.fetchall()
@@ -52,21 +48,21 @@ def resetStockList(db):
     db.execute("DELETE FROM supermarket")
     return 'Reset database'
 
-@delete ('/delete/<id>')
+@delete ('/delete/<id>') #(RESTful) This is idempotent as first call will delte the ID and the decond will will not because the item is not existant
 def deleteItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     answer = db.fetchall()
     if answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        answer.status=404
+        answer.status=404 #response code
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        answer.status=200
+        answer.status=200 #response code
         return 'Item was deleted'
 
-@get ('/getSpecific/<id>')
+@get ('/getSpecific/<id>') #(RESTful) Idempotent as will always retireve the same value for same ID
 def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
@@ -76,12 +72,12 @@ def getItem(db, id):
         answer.status=400
     elif answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        answer.status=404
+        answer.status=404 #response code
     else:
         return json.dumps(answer)
-        answer.status=200
+        answer.status=200 #response code
 
-@put ('/update/<id>')
+@put ('/update/<id>') #(RESTful) Idempotent as repeat requests will result in same result
 def updateItem(db, id):
 
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
@@ -89,7 +85,7 @@ def updateItem(db, id):
     responses = db.fetchall()
     if responses == []:
         return 'Error 404: Element with ID ' + id + ' is not in database'
-        response.status=404
+        response.status=404 #response code
     else:
 
         origin = request.forms.get('origin')
@@ -102,71 +98,32 @@ def updateItem(db, id):
                         SET product=?, origin=?, amount=?, image=?,
                         best_before_date=? WHERE id=?""",
                         (product, origin, amount, image, best_before_date, id))
-        response.status=201
+        response.status=201 #response code
         return 'Item was updated'
-
-@error(404)
-def error404(error):
-    return 'Nothing here, sorry'
-
-@error(500)
-def error500(error):
-    return 'Sorry, server error :/ *Import dinaosaur*'
-
-@error(403)
-def error403(error):
-    return 'Halt, authorized personal only >:)'
-
-@error(503)
-def error503(error):
-    return 'service unavailable: server in maintanance. Try again later :))'
-
-@error(504)
-def error504(error):
-    return 'Gateway timeout, lolz'
-
-@get('/hello')
-def hello_world():
-    '''Responds to http://localhost:8080/hello with an example JSON object
-    '''
-    response_body = {'Hello': 'World'}
-
-    # This returns valid JSON in the response, but does not yet set the
-    # associated HTTP response header.  This you should do yourself in your
-    # own routes!
-    return json.dumps(response_body)
-
-@get('/db-example')
-def db_example(db):
-    '''Responds with all Dutch products in the database.
-
-    We added a parameter 'db' to your function to get a database cursor from
-    WtPlugin. The parameter db is of type sqlite3.Cursor. Documentation is
-    at https://docs.python.org/2/library/sqlite3.html#sqlite3.Cursor
-
-    If you want to start with a clean sheet, delete the file 'inventory.db'.
-    It will be automatically re-created and filled with one example item.
-
-    Access this route at http://localhost:8080/db-example
-    '''
-    # Example SQL statement to select the name of all products from holland
-    db.execute("SELECT * FROM supermarket WHERE origin=?", ('The Netherlands',))
-
-    # Get all results in a list of dictionaries that can be easily converted into JSON later
-    products = db.fetchall() # Use db.fetchone() to get results one by one
-
-    # TODO: add code that checks for errors so you know what went wrong if anything went wrong
-    # TODO: set the appropriate HTTP response headers and HTTP response codes here.
-
-    # Return results as JSON
-    return json.dumps(products)
 
 ###############################################################################
 # Error handling
-#
 # TODO (optional):
-#       Add sensible error handlers for all errors that may occur when a user
-#       accesses your API.
+
+@error(404) #Page not found
+def error404(error):
+    return 'Nothing here, sorry'
+
+@error(500) #Server Error
+def error500(error):
+    return 'Sorry, server error :/ *Import dinaosaur*'
+
+@error(403) #Unauthorized access
+def error403(error):
+    return 'Halt, authorized personal only >:)'
+
+@error(503) #Server not responding
+def error503(error):
+    return 'service unavailable: server in maintanance. Try again later :))'
+
+@error(504) #Gateway timeout
+def error504(error):
+    return 'Gateway timeout, lolz'
 ###############################################################################
 
 
@@ -174,17 +131,6 @@ def db_example(db):
 # This starts the server
 #
 # Access it at http://localhost:8080
-#
-# If you have problems with the reloader (i.e. your server does not
-# automatically reload new code after you save this file), set `reloader=False`
-# and reload manually.
-#
-# You might want to set `debug=True` while developing and/or debugging and to
-# `False` before you submit.
-#
-# The installed plugin 'WtPlugin' takes care of enabling CORS (Cross-Origin
-# Resource Sharing; you need this if you use your API from a website) and
-# provides you with a database cursor.
 ###############################################################################
 
 if __name__ == "__main__":
@@ -193,4 +139,4 @@ if __name__ == "__main__":
 
     install(WtDbPlugin())
     install(WtCorsPlugin())
-    run(host='localhost', port=8080, reloader=True, debug=True, autojson=False)
+    run(host='localhost', port=8080, reloader=True, debug=False, autojson=False)
