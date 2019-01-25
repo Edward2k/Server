@@ -61,8 +61,8 @@ def deleteItem(db, id):
     response = db.fetchall()
     if response == []:
         return 'Element with ID ' + id + ' is not in database'
-        response.status=404
-        return 'Item is not in database'
+        #response.status=404
+        #return 'Item is not in database'
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
