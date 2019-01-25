@@ -36,8 +36,6 @@ def submitForm(db):
     db.execute(""" INSERT INTO supermarket (product, origin, amount, image, best_before_date)
                 VALUES (?, ?, ?, ?, ?)""",
                 (product, origin, amount, image,  best_before_date))
-    response.status=201 #response code
-    return 'Item has been submitted'
 
 @get('/getAll') #will return all sqllite data in JSON format. It is Idempotent as 2 consescutive calls result in same response
 def getStocklist(db):
@@ -57,11 +55,11 @@ def deleteItem(db, id):
     answer = db.fetchall()
     if answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        response.status=404 #response code
+        answer.status=404 #response code
 
     else:
         db.execute("DELETE FROM supermarket WHERE id=?", (id,))
-        response.status=200 #response code
+        answer.status=200 #response code
         return 'Item was deleted'
 
 @get ('/getSpecific/<id>') #(RESTful) Idempotent as will always retireve the same value for same ID
@@ -69,17 +67,17 @@ def getItem(db, id):
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
                     FROM supermarket WHERE id=?""", (id,))
     answer = db.fetchall()
-    #if (isinstance(id, basestring)==false): #should check if id is integer. (if (floor(id)==ceil(id)){) in c++
-        #return 'Element wrong input, id must be integer'
-    # response.status=400
-    if answer == []:
+    if id.isalpha():
+        return 'Element wrong input, id must be integer'
+        answer.status=400
+    elif answer == []:
         return 'Element with ID ' + id + ' is not in database'
-        response.status=404 #response code
+        answer.status=404 #response code
     else:
         return json.dumps(answer)
-        response.status=200 #response code
+        answer.status=200 #response code
 
-@put ('/update/<id>') #(RESTful) Idempotent as repeat requests will result in same result 
+@put ('/update/<id>') #(RESTful) Idempotent as repeat requests will result in same result
 def updateItem(db, id):
 
     db.execute("""SELECT id, product, origin, amount, image, best_before_date
@@ -123,7 +121,7 @@ def error403(error):
 def error503(error):
     return 'service unavailable: server in maintanance. Try again later :))'
 
-@error(504) #Gateway timeout 
+@error(504) #Gateway timeout
 def error504(error):
     return 'Gateway timeout, lolz'
 ###############################################################################

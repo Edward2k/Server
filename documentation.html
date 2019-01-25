@@ -8,20 +8,32 @@
 <body>
     <h1>Getting Started</h1>
 
-    <p>The purpose for this document is to explain the use of the API developed in this assignement. </p>
+    <p>The purpose for this document is to explain the use of the API, developed in this assignement.
+    It is an RESTful API, that follows the CRUD principles, that allows the user to Create, Retrieve, Update and Delete
+    content from our database, which stores items sold at Einstein Heijn, and their properties, like; product name, origin,
+    best before date, and an image. This is achieved by using the POST, GET, PUT, and DELETE, http methods, respectively.
+    Their functionality is explained below:</p>
 
-    <h3> GET stocklist </h3>
-    <p> <b> Endpoint:</b> GET localhost:8080/home </p>
-    <p> This will return the entire inventory in the stock list.
+    <h3>GET Entirety of Stocklist </h3>
+
+    <p><b> Endpoint:</b> http://localhost:8080/getAll </p>
+    <p>This will return the entire inventory in the stock list. </p>
+
+    <p><b>HTTP method:</b> GET </p>
+
+    <p><b>Response format:</b> JSON </p>
 
     <h5> Request Parameters </h5>
+    <p> Since this method will get all the inventory, no parameter need to be passed that would
 
-    <h3>GET item </h3>
 
-    <h5>Endpoint</h5>
-    <p>GET localhost:8080/inventory/{product_name} </p>
+    <h3>GET Specific Item </h3>
 
-    <h5>Request Parameters </h5>
+    <p><b>Endpoint:</b> GET http://localhost:8080/getSpecific/{id}</p>
+    <p>This will return the item speficied by the given id in the URL, and show its properties: product name, origin,
+    best before date, and its image. </p>
+    <p>Request Parameters </p>
+
     <p> Header: none </p>
     <p> Path: none </p>
     <p> Query: none </p>
