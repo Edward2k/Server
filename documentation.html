@@ -119,7 +119,7 @@ p {
         <td> Element has been created </td>
       </tr>
     </table>
-
+    <p>The post method is not indempotent, because everytime the above request is repeated, a new element with a new id is created in the databse.</p>
   </section>
 
     <section id="getAll">
@@ -165,9 +165,11 @@ p {
                   "image": "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fproducemadesimple.ca%2Fwp-content%2Fuploads%2F2015%2F01%2Forange-web-1024x768.jpg&f=1",
                   "amount": "70kg",
                   "id": 3</p>
-              <p>} ]</p> </td>
+              <p>} ]</p>
+            </td>
         </tr>
       </table>
+      <p>Note: the get method is said to be indempotent, because if this example request is repeated several times, it will not change the content of the server.</p>
     </section>
 
     <section id= "getSpecific">
@@ -211,6 +213,7 @@ p {
           <td>Wrong input, id must be integer</td>
         </tr>
       </table>
+      <p>Note: the get method is said to be indempotent, because if this example request is repeated several times, it will not change the content of the server.</p>
     </section>
 
     <section id= "update">
@@ -252,7 +255,8 @@ p {
         </tr>
         <tr>
           <td> PUT http://localhost:8080/update/3?amount=100kg&best_before_date=12.03.2022
-          <p><i>Note: if the passing of the parameters does not work via the URL, as seen above, pass them using the 'Postman' application.</i></p></td>
+          <p><i>Note: if the passing of the parameters does not work via the URL, as seen above, pass them using the 'Postman' application.</i>
+          Furthermore, if this example request is repeated several times, it will not change the content of the server, thus it is said to be indempotent.</p></td>
           <td> <p>[ {</p>
                   <p>"origin": "Thailand",
                   "product": "Oranges",
@@ -267,6 +271,7 @@ p {
           <td> Element with ID 4 is not in database</td>
         </tr>
       </table>
+      <p>Note: the put method is indempotent, because repeating the above request will not change the state of the server- it will 'update' the same item with the same update.</p>
     </section>
 
     <section id= "delete">
@@ -291,7 +296,7 @@ p {
           <td> Item was deleted </td>
         </tr>
         <tr>
-          <td><p><i>Note, that if we want to delete the same item, with ID 3 again, item will not be found.</i></p>
+          <td><p><i>Note, that if we want to delete the same item, with ID 3 again, item will not be found, meaning that it is indempotent.</i></p>
             <p>DELETE http://localhost:8080/delete/3 </p></td>
           <td> Element with ID 3 is not in database</td>
         </tr>
@@ -320,6 +325,8 @@ p {
           <td> Reset database </td>
         </tr>
       </table>
+
+      <p>Note: This feature of the API is also Indempotent, because resetting the server twice will not change the state of the server. </p>
     </section>
 
 </body>
